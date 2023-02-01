@@ -29,7 +29,8 @@ Explore and understand the lab environment.  This exercise will cover
 
 ## Diagram
 
-![Red Hat Ansible Automation](https://github.com/ansible/workshops/raw/devel/images/ansible_network_diagram.png)
+![Red Hat Ansible Automation](images/network_workshop_topology.jpg)
+
 
 ## VS Code Guide
 
