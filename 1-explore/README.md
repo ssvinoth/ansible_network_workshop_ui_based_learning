@@ -151,11 +151,9 @@ An inventory is required for Automation controller to be able to run jobs.  An i
 
 1. Click on the **Inventories** button under **RESOURCES** on the left menu bar.
 
-    ![Inventories Button](images/automation_controller_inventories.png)
+    ![Inventories Button](images/automation_controller_inventories_menu.jpg)
 
 2. Under Inventories click on the `Workshop Inventory`.
-
-    ![Workshop Inventory Link](images/automation_controller_workshop_inventory.png)
 
 3. Under the `Workshop Inventory` click the **Hosts** button at the top.  There will be four hosts here, rtr1 through rtr4 as well as the ansible control node.  
 
@@ -187,8 +185,6 @@ A project is how Ansible Playbooks are imported into Automation controller.  You
 
 1. Click on the **Projects** button under **RESOURCES** on the left menu bar.
 
-   ![Workshop Project Link](images/automation_controller_projects.png)
-
 2. Under **PROJECTS** there will be a `Workshop Project`.  
 
     ![Workshop Project Link](images/workshop_project.png)
@@ -199,8 +195,7 @@ A project is how Ansible Playbooks are imported into Automation controller.  You
 
   ![Workshop Project Detail](images/workshop_project_detail.png)
 
-    Note that Source Control URL is set to [https://github.com/network-automation/toolkit](https://github.com/network-automation/toolkit
-)
+   > Note that Source Control URL is set to [https://github.com/network-automation/toolkit](https://github.com/network-automation/toolkit)
 
 **Student Network Automation Project :**
 
@@ -231,11 +226,9 @@ Credentials are utilized by Automation controller for authentication when launch
 
 1. Click on the **Credentials** button under **Resources** on the left menu bar.
 
-    ![credentials link](images/automation_controller_credentials.png)
 
 2. Under **Credentials** there will be multiple pre-configured credentials, including `Workshop Credential`, `Controller Credential` and the `registry.redhat.io credential`.  Click on the `Workshop Credential`.
 
-    ![Workshop Credential Link](images/workshop_credential.png)
 
 3. Under the `Workshop Credential` examine the following:
 
