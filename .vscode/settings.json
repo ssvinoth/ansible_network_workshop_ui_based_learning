@@ -1,0 +1,5 @@
+{
+    "yaml.schemas": {
+        "https://raw.githubusercontent.com/ansible-community/schemas/main/f/ansible-playbook.json": "file:///Users/vsaruvas/work/sw/ansible_projects/demos/network_automation_workshop/ansible_network_workshop_ui_based_learning/3-facts/facts.yml"
+    }
+}

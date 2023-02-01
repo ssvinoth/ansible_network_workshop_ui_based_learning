@@ -10,8 +10,8 @@ If you are using an **all Cisco workbench** (all four routers are Cisco IOS rout
   * [Guide](#guide)
     * [Step 1 - Verify VLAN configuration](#step-1---verify-vlan-configuration)
     * [Step 2 - Creating the Ansible Playbook](#step-2---creating-the-ansible-playbook)
-    * [Step 3 - Examine the Ansible Playbook and create job template](#step-3---examine-the-ansible-playbook-and-create-job-template)
-    * [Step 4 - Launch the Job](#step-4---launch-the-job)
+    * [Step 3 - Examine the Ansible Playbook](#step-3---examine-the-ansible-playbook)
+    * [Step 4 - Execute the Ansible Playbook](#step-4---execute-the-ansible-playbook)
     * [Step 5 - Verify VLAN configuration](#step-5---verify-vlan-configuration)
     * [Step 6 - Using the gathered parameter](#step-6---using-the-gathered-parameter)
     * [Step 7 - Execute the gathered playbook](#step-7---execute-the-gathered-playbook)
@@ -109,9 +109,7 @@ As you can see in the output above there is no VLAN configuration outside of the
 
    ![picture of vs code setup](images/setup_vs_code.png)
 
-* Save the yaml file and sync the project using the vs code menu `Terminal → Run Task → ansible-project-sync`
-
-### Step 3 - Examine the Ansible Playbook and create job template
+### Step 3 - Examine the Ansible Playbook
 
 * First lets examine the first four lines:
 
@@ -160,58 +158,45 @@ As you can see in the output above there is no VLAN configuration outside of the
     Only two of these parameters will be covered in this exercise, but additional are available in the [supplemental exercises](../supplemental/README.md).
   * `config:` - this is the supplied VLAN configuration.  It is a list of dictionaries. The most important takeaway is that if the module was change from `arista.eos.vlans` to `junipernetworks.junos.vlans` it would work identically.  This allows network engineers to focus on the network (e.g. VLAN configuration) versus the vendor syntax and implementation.
 
-#### Create the Job Template
+### Step 4 - Execute the Ansible Playbook
 
+* Execute the playbook using the `ansible-navigator run`.  Since there is just one task we can use the `--mode stdout`
 
-* Open the web UI and click on the `Templates` link on the left menu.
+  ```bash
+  $ ansible-navigator run resource.yml --mode stdout
+  ```
 
-   ![templates link](../6-controller-job-template/images/controller_templates.png)
+* The output will look similar to the following:
 
-* Click on the blue **Add** button to create a new job template
+  ```bash
+  $ ansible-navigator run resource.yml --mode stdout
 
-   ![templates link](../6-controller-job-template/images/controller_add.png)
+  PLAY [configure VLANs] *********************************************************
 
-> Note:
->
-> Make sure to select `job template` and not `workflow template`)
+  TASK [use vlans resource module] ***********************************************
+  changed: [rtr4]
+  changed: [rtr2]
 
-* Fill out the job template parameters as follows:
+  PLAY RECAP *********************************************************************
+  rtr2                       : ok=1    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+  rtr4                       : ok=1    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+  ```
 
-  | Parameter | Value |
-  |---|---|
-  | Name  | VLAN Config   |
-  |  Job Type |  Run |
-  |  Inventory |  Workshop Inventory |
-  |  Project |  Student Network Automation Project |
-  |  Execution Environment | Default execution environment |
-  |  Playbook |  resource.yml |
-  |  Credential |  Workshop Credential |
-  
-  > NOTE: Please use the resource.yml file and NOT the 4-resource-module/resource.yml
+* Re-running the playbook will demonstrate the concept of [idempotency](https://en.wikipedia.org/wiki/Idempotence)
 
-  Screenshot of the job template parameters filled out:
-  ![VLAN config job template](images/controller_vlan-config_template.jpg)
+  ```bash
+  $ ansible-navigator run resource.yml --mode stdout
 
-* Scroll down and click the blue `Save` button.
+  PLAY [configure VLANs] *********************************************************
 
-### Step 4 - Launch the Job
+  TASK [use vlans resource module] ***********************************************
+  ok: [rtr2]
+  ok: [rtr4]
 
-1. Navigate back to the `Templates` window, where all Job Templates are listed.
-
-2. Launch the `VLAN config` Job Template by clicking the Rocket button.
-
-    ![rocket button](../6-controller-job-template/images/controller_rocket.png)
-
-    When the rocket button is clicked this will launch the job.  The job will open in a new window called the **Job Details View**.  More info about [Automation controller jobs](https://docs.ansible.com/automation-controller/latest/html/userguide/jobs.html) can be found in the documentation.
-3. Examine the Job run output.
-
-
-![vlan config 1st run](images/controller_vlan-config_1st_run_output.jpg)
-
-
-* Re-running the job will demonstrate the concept of [idempotency](https://en.wikipedia.org/wiki/Idempotence)
-
-![vlan config 2nd run](images/controller_vlan-config_2nd_run_output.jpg)
+  PLAY RECAP *********************************************************************
+  rtr2                       : ok=1    changed=0    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+  rtr4                       : ok=1    changed=0    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
+  ```
 
 * As you can see in the output, everything will return `ok=1` indiciating that no changes were taken place.
 
@@ -281,11 +266,9 @@ As you can see, the resource module configured the Arista EOS network device wit
     - name: copy vlan_config to file
       copy:
         content: "{{ vlan_config | to_nice_yaml }}"
-        dest: "/opt/ansible/{{ inventory_hostname }}_vlan.yml"
+        dest: "{{ playbook_dir }}/{{ inventory_hostname }}_vlan.yml"
   ```
   <!-- {% endraw %} -->
-
-* Save the yaml file and sync the project using the vs code menu `Terminal → Run Task → ansible-project-sync`
 
 * The first task is identical except the `state: merged` has been switched to `gathered`, the `config` is no longer needed since we are reading in the configuration (verus applying it to the network device), and we are using the `register` to save the output from the module into a variable named `vlan_config`
 
@@ -293,56 +276,41 @@ As you can see, the resource module configured the Arista EOS network device wit
 
 *  The `| to_nice_yaml` is a [filter](https://docs.ansible.com/ansible/latest/user_guide/playbooks_filters.html), that will transform the JSON output (default) to YAML.
 
-* The  `inventory_hostname` are special varaible also referred to as [magic variables](https://docs.ansible.com/ansible/latest/reference_appendices/special_variables.html).  The `inventory_hostname` is the name of the device in our inventory.  This means the file will be saved as `/opt/ansible/rtr2_vlan.yml` and `/opt/ansible/rtr4_vlan.yml` for the two arista devices.
+* The `playbook_dir` and `inventory_hostname` are special varaible also referred to as [magic variables](https://docs.ansible.com/ansible/latest/reference_appendices/special_variables.html).  The `playbook_dir` simply means the directory we executed the playbook from, and the `inventory_hostname` is the name of the device in our inventory.  This means the file will be saved as `~/network-workshop/rtr2_vlan.yml` and `~/network-workshop/rtr4_vlan.yml` for the two arista devices.
 
 ### Step 7 - Execute the gathered playbook
 
-#### Create the Job Template
+* Execute the playbook using the `ansible-navigator run`.
 
-* Open the web UI and click on the `Templates` link on the left menu.
+  ```bash
+  $ ansible-navigator run gathered.yml --mode stdout
+  ```
 
-   ![templates link](../6-controller-job-template/images/controller_templates.png)
+* The output will look similar to the following:
 
-* Click on the blue **Add** button to create a new job template
+  ```bash
+  $ ansible-navigator run gathered.yml --mode stdout
 
-   ![templates link](../6-controller-job-template/images/controller_add.png)
+  PLAY [configure VLANs] *********************************************************
 
-> Note:
->
-> Make sure to select `job template` and not `workflow template`)
+  TASK [use vlans resource module] ***********************************************
+  ok: [rtr4]
+  ok: [rtr2]
 
-* Fill out the job template parameters as follows:
+  TASK [copy vlan_config to file] ************************************************
+  changed: [rtr2]
+  changed: [rtr4]
 
-  | Parameter | Value |
-  |---|---|
-  | Name  | VLAN Info Gathering   |
-  |  Job Type |  Run |
-  |  Inventory |  Workshop Inventory |
-  |  Project |  Student Network Automation Project |
-  |  Execution Environment | Default execution environment |
-  |  Playbook |  gathered.yml |
-  |  Credential |  Workshop Credential |
-  
-  > NOTE: Please use the gathered.yml file and NOT the 4-resource-module/gathered.yml
-
-  Screenshot of the job template parameters filled out:
-  ![VLAN gather job template](images/controller_vlan-gather_template.jpg)
-
-* Scroll down and click the blue `Save` button.
-
-#### Launch the Job
-
-* Click on the Launch button on the Job templates details view from last step.
-  ![VLAN gather job launch](images/controller_vlan-gather_template_launch.jpg)
-
-* Examine the output. 
-![VLAN gather job output](images/controller_vlan-gather_template_output.jpg)
+  PLAY RECAP *********************************************************************
+  rtr2                       : ok=2    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+  rtr4                       : ok=2    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+  ```
 
 ### Step 8 - Examine the files
 
 * Open the newly created files that `gathered` the VLAN confgiuration from the Arista network devices.
 
-* The two files were saved to `/opt/ansible/rtr2_vlan.yml/rtr2_vlan.yml` and `/opt/ansible/rtr2_vlan.yml/rtr4_vlan.yml` for the two arista devices.
+* The two files were saved to `~/network-workshop/rtr2_vlan.yml` and `~/network-workshop/rtr4_vlan.yml` for the two arista devices.
 
 * Here is a screenshot:
 
@@ -360,7 +328,7 @@ As you can see, the resource module configured the Arista EOS network device wit
 The finished Ansible Playbook is provided here for an answer key:
 
 -  [resource.yml](resource.yml)
--  [gathered-ui.yml](gathered-ui.yml)
+-  [gathered.yml](gathered.yml)
 
 ## Complete
 
@@ -370,6 +338,6 @@ As stated previously only two of the resource modules parameters were covered in
 
 In the next exercise we will start using Automation controller.
 ---
-[Previous Exercise](../3-facts/README-UI.md) | [Next Exercise](../5-explore-controller/README-UI.md)
+[Previous Exercise](../3-facts/README.md) | [Next Exercise](../5-explore-controller/README.md)
 
-[Click here to return to the Ansible Network Automation Workshop](../README-UI.md)
+[Click here to return to the Ansible Network Automation Workshop](../README.md)

@@ -1,5 +1,7 @@
 # Exercise 7: Creating a Survey
 
+**Read this in other languages**: ![uk](https://github.com/ansible/workshops/raw/devel/images/uk.png) [English](README.md),  ![japan](https://github.com/ansible/workshops/raw/devel/images/japan.png) [日本語](README.ja.md), ![Español](https://github.com/ansible/workshops/raw/devel/images/es.png) [Español](README.es.md).
+
 ## Table of Contents
 
 * [Objective](#objective)
@@ -190,11 +192,12 @@ Let the job run to completion.  Let the instructor know if anything fails.
 
    The banner will appear on login.  Here is an example from above:
 
-   ```sh
-   [student1@ansible-1 ~]$ ssh rtr1
-   Warning: Permanently added 'rtr1,3.237.253.154' (RSA) to the list of known hosts.
-   This router was configured by Ansible
    ```
+   [student1@ansible-1 ~]$ ssh rtr1
+  Warning: Permanently added 'rtr1,3.237.253.154' (RSA) to the list of known hosts.
+
+  This router was configured by Ansible
+  ```
 
 2. Verify on additional routers
 
@@ -211,6 +214,6 @@ You have successfully demonstrated
 You have completed lab exercise 7
 
 ---
-[Previous Exercise](../6--controller-job-template/README-UI.md) | [Next Exercise](../8-controller-rbac/README-UI.md)
+[Previous Exercise](../6--controller-job-template/README.md) | [Next Exercise](../8-controller-rbac/README.md)
 
-[Click here to return to the Ansible Network Automation Workshop](../README-UI.md)
+[Click here to return to the Ansible Network Automation Workshop](../README.md)

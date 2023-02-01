@@ -1,5 +1,6 @@
 # Exercise 6: Creating an Automation controller Job Template
 
+**Read this in other languages**: ![uk](https://github.com/ansible/workshops/raw/devel/images/uk.png) [English](README.md),  ![japan](https://github.com/ansible/workshops/raw/devel/images/japan.png) [日本語](README.ja.md), ![Español](https://github.com/ansible/workshops/raw/devel/images/es.png) [Español](README.es.md).
 
 ## Table of Contents
 
@@ -161,6 +162,6 @@ You have successfully demonstrated
 You have completed lab exercise 6
 
 ---
-[Previous Exercise](../5-explore-controller/README-UI.md) | [Next Exercise](../7-controller-survey/README-UI.md)
+[Previous Exercise](../5-explore-controller/README.md) | [Next Exercise](../7-controller-survey/README.md)
 
-[Click here to return to the Ansible Network Automation Workshop](../README-UI.md)
+[Click here to return to the Ansible Network Automation Workshop](../README.md)

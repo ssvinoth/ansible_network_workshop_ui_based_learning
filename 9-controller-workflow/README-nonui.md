@@ -1,5 +1,7 @@
 # Exercise 9: Creating a Workflow
 
+**Read this in other languages**: ![uk](https://github.com/ansible/workshops/raw/devel/images/uk.png) [English](README.md),  ![japan](https://github.com/ansible/workshops/raw/devel/images/japan.png) [日本語](README.ja.md), ![Español](https://github.com/ansible/workshops/raw/devel/images/es.png) [Español](README.es.md).
+
 ## Table of Contents
 
 * [Objective](#objective)
@@ -183,6 +185,6 @@ You have completed lab exercise 9.  This concludes the Network Automation worksh
 For additional supplemental exercises check out [Supplemental Exercises](../supplemental/README.md)
 
 ---
-[Previous Exercise](../8-controller-rbac/README-UI.md)
+[Previous Exercise](../8-controller-rbac/README.md)
 
-[Click here to return to the Ansible Network Automation Workshop](../README-UI.md)
+[Click here to return to the Ansible Network Automation Workshop](../README.md)

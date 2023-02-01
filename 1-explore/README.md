@@ -1,47 +1,37 @@
-# Exercise 1 - Exploring the lab environment
-
-**Read this in other languages**: ![uk](https://github.com/ansible/workshops/raw/devel/images/uk.png) [English](README.md),  ![japan](https://github.com/ansible/workshops/raw/devel/images/japan.png) [日本語](README.ja.md), ![Español](https://github.com/ansible/workshops/raw/devel/images/es.png) [Español](README.es.md).
+# Exercise 1: Exploring the lab environment
 
 ## Table of Contents
 
 * [Objective](#objective)
 * [Diagram](#diagram)
-* [Guide](#guide)
-   * [Step 1 - Connecting via VS Code](#step-1---connecting-via-vs-code)
-   * [Step 2 - Using the Terminal](#step-2---using-the-terminal)
-   * [Step 3 - Examining Execution Environments](#step-3---examining-execution-environments)
-   * [Step 4 - Examining the ansible-navigator configuration](#step-4---examining-the-ansible-navigator-configuration)
-   * [Step 5 - Examining inventory](#step-5---examining-inventory)
-   * [Step 6 - Understanding inventory](#step-6---understanding-inventory)
-   * [Step 7 - Using ansible-navigator to explore inventory](#step-7---using-ansible-navigator-to-explore-inventory)
-   * [Step 8 - Connecting to network devices](#step-8---connecting-to-network-devices)
+* [VS Code Guide](#vs-code-guide)
+    * [Step 1 - Connecting via VS Code](#step-1---connecting-via-vs-code)
+    * [Step 2 - Using the Terminal](#step-2---using-the-terminal)
+    * [Step 3 - Connecting to network devices](#step-3---connecting-to-network-devices)
+* [Controller Guide ](#automation-controller-guide)
+   * [Step 1: Login to Automation controller](#step-1-login-to-automation-controller)
+   * [Step 2: Examine the Automation controller Inventory](#step-2-examine-the-automation-controller-inventory)
+   * [Step 3: Examine the Automation controller Workshop Project](#step-3-examine-the-automation-controller-workshop-project)
+   * [Step 4: Examine the Automation controller Workshop Credential](#step-4-examine-the-automation-controller-workshop-credential)
+* [Takeaways](#takeaways)
 * [Complete](#complete)
 
 ## Objective
 
-Explore and understand the lab environment.
-
-These first few lab exercises will be exploring the command-line utilities of the Ansible Automation Platform.  This includes
-
-- [ansible-navigator](https://github.com/ansible/ansible-navigator) - a command line utility and text-based user interface (TUI) for running and developing Ansible automation content.
-- [ansible-core](https://docs.ansible.com/core.html) - the base executable that provides the framework, language and functions that underpin the Ansible Automation Platform.  It also includes various cli tools like `ansible`, `ansible-playbook` and `ansible-doc`.  Ansible Core acts as the bridge between the upstream community with the free and open source Ansible and connects it to the downstream enterprise automation offering from Red Hat, the Ansible Automation Platform.
-- [Execution Environments](https://docs.ansible.com/automation-controller/latest/html/userguide/execution_environments.html) - not specifically covered in this workshop because the built-in Ansible Execution Environments already included all the Red Hat supported collections which includes all the network collections we use for this workshop.  Execution Environments are container images that can be utilized as Ansible execution.
-- [ansible-builder](https://github.com/ansible/ansible-builder) - not specifically covered in this workshop, `ansible-builder` is a command line utility to automate the process of building Execution Environments.
-
-If you need more information on new Ansible Automation Platform components bookmark this landing page [https://red.ht/AAP-20](https://red.ht/AAP-20)
-
-> Chat with us
->
-> Before you get started, please join us on slack! <a href="https://join.slack.com/t/ansiblenetwork/shared_invite/zt-3zeqmhhx-zuID9uJqbbpZ2KdVeTwvzw">Click here to join the ansiblenetwork slack</a>.  This will allow you to chat with other network automation engineers and get help after the workshops concludes.  If the link goes stale please email <a href="mailto:ansible-network@redhat.com">Ansible Technical Marketing</a></th>
-
+Explore and understand the lab environment.  This exercise will cover
+* Connecting and working with VS Code
+* Determining the Ansible Automation Platform version running on the control node
+* Locating and understanding:
+  * Automation controller **Inventory**
+  * Automation controller **Credentials**
+  * Automation controller **Projects**
+  * Automation controller **Execution Environment**
 
 ## Diagram
 
 ![Red Hat Ansible Automation](https://github.com/ansible/workshops/raw/devel/images/ansible_network_diagram.png)
 
-
-
-## Guide
+## VS Code Guide
 
 ### Step 1 - Connecting via VS Code
 
@@ -82,179 +72,25 @@ If you need more information on new Ansible Automation Platform components bookm
 
   ![picture of new terminal](images/vscode-new-terminal.png)
 
+This is the terminal of the controller server. You can execute commands on the terminal. We will use this in the next step for connecting to the routers.
+
+**[OPTIONAL]**
+
 Navigate to the `network-workshop` directory on the Ansible control node terminal.
 
 ```bash
 [student1@ansible-1 ~]$ cd ~/network-workshop/
 [student1@ansible-1 network-workshop]$ pwd
 /home/student1/network-workshop
-[student1@ansible-1 network-workshop]$
+[student1@ansible-1 network-workshop]$ ls -ltr
 ```
 
 * `~` - the tilde in this context is a shortcut for the home directory, i.e. `/home/student1`
 * `cd` - Linux command to change directory
 * `pwd` - Linux command for print working directory.  This will show the full path to the current working directory.
+* `ls -ltr` - Linux command to listing files in the the working directory
 
-### Step 3 - Examining Execution Environments
-
-Run the `ansible-navigator` command with the `images` argument to look at execution environments configured on the control node:
-
-```bash
-$ ansible-navigator images
-```
-
-![ansible-navigator images](images/navigator-images.png)
-
-
-> Note
->
-> The output  you see might differ from the above output
-
-This command gives you information about all currently installed Execution Environments or EEs for short.  Investigate an EE by pressing the corresponding number.  For example pressing **2** with the above example will open the `ee-supported-rhel8` execution environment:
-
-![ee main menu](images/navigator-ee-menu.png)
-
-Selecting `2` for `Ansible version and collections` will show us all Ansible Collections installed on that particular EE, and the version of `ansible-core`:
-
-![ee info](images/navigator-ee-collections.png)
-
-### Step 4 - Examining the ansible-navigator configuration
-
-Either use Visual Studio Code to open or use the `cat` command to view the contents of the `ansible-navigator.yml` file.  The file is located in the home directory:
-
-```bash
-$ cat ~/.ansible-navigator.yml
----
-ansible-navigator:
-  ansible:
-    inventories:
-    - /home/student1/lab_inventory/hosts
-
-  execution-environment:
-    image: registry.redhat.io/ansible-automation-platform-20-early-access/ee-supported-rhel8:2.0.0
-    enabled: true
-    container-engine: podman
-    pull-policy: missing
-    volume-mounts:
-    - src: "/etc/ansible/"
-      dest: "/etc/ansible/"
-```
-
-Note the following parameters within the `ansible-navigator.yml` file:
-
-* `inventories`: shows the location of the ansible inventory being used
-* `execution-environment`: where the default execution environment is set
-
-For a full listing of every configurable knob checkout the [documentation](https://ansible-navigator.readthedocs.io/en/latest/settings/)
-
-### Step 5 - Examining inventory
-
-The scope of a `play` within a `playbook` is limited to the groups of hosts declared within an Ansible **inventory**. Ansible supports multiple [inventory](http://docs.ansible.com/ansible/latest/intro_inventory.html) types. An inventory could be a simple flat file with a collection of hosts defined within it or it could be a dynamic script (potentially querying a CMDB backend) that generates a list of devices to run the playbook against.
-
-In this lab you will work with a file based inventory written in the **ini** format. Either use Visual Studio Code to open or use the `cat` command to view the contents of the `~/lab_inventory/hosts` file.
-
-```bash
-$ cat ~/lab_inventory/hosts
-```
-
-```bash
-[all:vars]
-ansible_ssh_private_key_file=~/.ssh/aws-private.pem
-
-[routers:children]
-cisco
-juniper
-arista
-
-[cisco]
-rtr1 ansible_host=18.222.121.247 private_ip=172.16.129.86
-[arista]
-rtr2 ansible_host=18.188.194.126 private_ip=172.17.158.197
-rtr4 ansible_host=18.221.5.35 private_ip=172.17.8.111
-[juniper]
-rtr3 ansible_host=3.14.132.20 private_ip=172.16.73.175
-
-[cisco:vars]
-ansible_user=ec2-user
-ansible_network_os=ios
-ansible_connection=network_cli
-
-[juniper:vars]
-ansible_user=ec2-user
-ansible_network_os=junos
-ansible_connection=netconf
-
-[arista:vars]
-ansible_user=ec2-user
-ansible_network_os=eos
-ansible_connection=network_cli
-ansible_become=true
-ansible_become_method=enable
-
-[dc1]
-rtr1
-rtr3
-
-[dc2]
-rtr2
-rtr4
-
-[control]
-ansible ansible_host=13.58.149.157 ansible_user=student1 private_ip=172.16.240.184
-```
-
-### Step 6 - Understanding inventory
-
-In the above output every `[ ]` defines a group. For example `[dc1]` is a group that contains the hosts `rtr1` and `rtr3`. Groups can also be _nested_. The group `[routers]` is a parent group to the group `[cisco]`
-
-Parent groups are declared using the `children` directive. Having nested groups allows the flexibility of assigining more specific values to variables.
-
-We can associate variables to groups and hosts.
-
-> Note:
->
-> A group called **all** always exists and contains all groups and hosts defined within an inventory.
-
-Host variables can be defined on the same line as the host themselves. For example for the host `rtr1`:
-
-```sh
-rtr1 ansible_host=18.222.121.247 private_ip=172.16.129.86
-```
-
-* `rtr1` - The name that Ansible will use.  This can but does not have to rely on DNS
-* `ansible_host` - The IP address that ansible will use, if not configured it will default to DNS
-* `private_ip` - This value is not reserved by ansible so it will default to a [host variable](http://docs.ansible.com/ansible/latest/intro_inventory.html#host-variables).  This variable can be used by playbooks or ignored completely.
-
-Group variables groups are declared using the `vars` directive. Having groups allows the flexibility of assigning common variables to multiple hosts. Multiple group variables can be defined under the `[group_name:vars]` section. For example look at the group `cisco`:
-
-```sh
-[cisco:vars]
-ansible_user=ec2-user
-ansible_network_os=ios
-ansible_connection=network_cli
-```
-
-* `ansible_user` - The user ansible will be used to login to this host, if not configured it will default to the user the playbook is run from
-* `ansible_network_os` - This variable is necessary while using the `network_cli` connection type within a play definition, as we will see shortly.
-* `ansible_connection` - This variable sets the [connection plugin](https://docs.ansible.com/ansible/latest/plugins/connection.html) for this group.  This can be set to values such as `netconf`, `httpapi` and `network_cli` depending on what this particular network platform supports.
-
-### Step 7 - Using ansible-navigator to explore inventory
-
-We can also use the `ansible-navigator` TUI to explore inventory.
-
-Run the `ansible-navigator inventory` command to bring up inventory in the TUI:
-
-![ansible-navigator tui](images/ansible-navigator.png)
-
-Pressing **0** or **1** on your keyboard will open groups or hosts respectively.
-
-![ansible-navigator groups](images/ansible-navigator-groups.png)
-
-Press the **Esc** key to go up a level, or you can zoom in to an individual host:
-
-![ansible-navigator host](images/ansible-navigator-rtr-1.png)
-
-### Step 8 - Connecting to network devices
+### Step 3 - Connecting to network devices
 
 There are four routers, named rtr1, rtr2, rtr3 and rtr4.  The network diagram is always available on the [network automation workshop table of contents](../README.md).  The SSH configuration file (`~/.ssh/config`) is already setup on the control node.  This means you can SSH to any router from the control node without a login:
 
@@ -275,21 +111,172 @@ rtr1#show ver
 Cisco IOS XE Software, Version 16.09.02
 ```
 
+
+## Automation Controller Guide
+
+### Step 1: Login to Automation controller
+
+1.  Return to the workshop launch page provided by your instructor.
+
+2.  Click on the link to the Automation controller webUI.  You should see a login screen similar to the follow:
+
+   Screenshot of Automation controller login window.
+![automation controller login window](images/automation_controller_login.png)
+
+   * The username will be `admin`
+   * password provided on launch page
+
+
+3. After logging in the Job Dashboard will be the default view as shown below.
+
+   ![automation controller dashboard](images/automation_controller_dashboard.png)
+
+4. Click on the **?** button on the top right of the user interface and click **About**
+
+   ![about button link](images/automation_controller_about.png)
+
+5. A window will pop up similar to the following:
+
+   ![version info window](images/automation_controller_about_info.png)
+
+
+### Step 2: Examine the Automation controller Inventory
+
+An inventory is required for Automation controller to be able to run jobs.  An inventory is a collection of hosts against which jobs may be launched, the same as an Ansible inventory file. In addition, Automation controller can make use of an existing configuration management data base (cmdb) such as ServiceNow or Infoblox DDI.
+
+> Note:
+>
+> More info on Inventories in respect to Automation controller can be found in the [documentation here](https://docs.ansible.com/automation-controller/4.0.0/html/userguide/inventories.html)
+
+1. Click on the **Inventories** button under **RESOURCES** on the left menu bar.
+
+    ![Inventories Button](images/automation_controller_inventories.png)
+
+2. Under Inventories click on the `Workshop Inventory`.
+
+    ![Workshop Inventory Link](images/automation_controller_workshop_inventory.png)
+
+3. Under the `Workshop Inventory` click the **Hosts** button at the top.  There will be four hosts here, rtr1 through rtr4 as well as the ansible control node.  
+
+   ![automation controller workshop inventory hosts](images/workshop_inventory_hosts.png)
+
+4. Click on one of the devices.
+
+   ![workshop inventory hosts rtr1](images/workshop_inventory_hosts_rtr1.png)
+
+     Take note of the **VARIABLES** field.  The `host_vars` are set here including the `ansible_host` variable.
+
+5. Click on **GROUPS**.  There will be multiple groups here including `routers` and `cisco`.  Click on one of the groups.
+
+   ![workshop inventory groups](images/workshop_inventory_groups.png)
+
+6. Click on one of the groups.
+
+   ![workshop inventory group vars](images/workshop_inventory_group_vars.png)
+
+     Take note of the **VARIABLES** field. The `group_vars` are set here including the `ansible_connection` and `ansible_network_os` variable.
+
+### Step 3: Examine the Automation controller Workshop Project
+
+A project is how Ansible Playbooks are imported into Automation controller.  You can manage playbooks and playbook directories by either placing them manually under the Project Base Path on your Automation controller server, or by placing your playbooks into a source code management (SCM) system supported by Automation controller, including Git and Subversion.
+
+> Note:
+>
+> For more information on Projects in Automation controller, please [refer to the documentation](https://docs.ansible.com/automation-controller/latest/html/userguide/projects.html)
+
+1. Click on the **Projects** button under **RESOURCES** on the left menu bar.
+
+   ![Workshop Project Link](images/automation_controller_projects.png)
+
+2. Under **PROJECTS** there will be a `Workshop Project`.  
+
+    ![Workshop Project Link](images/workshop_project.png)
+
+    Note that `GIT` is listed for this project.  This means this project is using Git for SCM.
+
+3. Click on the `Workshop Project`.
+
+  ![Workshop Project Detail](images/workshop_project_detail.png)
+
+    Note that Source Control URL is set to [https://github.com/network-automation/toolkit](https://github.com/network-automation/toolkit
+)
+
+**Student Network Automation Project :**
+
+1. Click on the **Projects** button under **RESOURCES** on the left menu bar.
+
+   
+
+2. Under **PROJECTS** there will be a `Student Network Automation Project`.  
+
+    ![Student Project Link](images/automation_controller_student_project.jpg)
+
+    Note that Type is set to `Manual` for this project.  This means this project is using Manual sync instead of using SCM like GIT.
+
+3. Click on the `Student Network Automation Project`.
+
+  ![Student Project Detail](images/student_project_detail.jpg)
+
+   Note that Playbook Directory is set to `student_network_workshop` and Project Base Path is set to `/var/lib/awx/projects`. This is where you can copy all your playbooks and other artifacts for this project.
+
+
+### Step 4: Examine the Automation controller Workshop Credential
+
+Credentials are utilized by Automation controller for authentication when launching **Jobs** against machines, synchronizing with inventory sources, and importing project content from a version control system.  For the workshop we need a credential to authenticate to the network devices.
+
+> Note:
+>
+> For more information on Credentials in Automation controller please [refer to the documentation](https://docs.ansible.com/automation-controller/4.0.0/html/userguide/credentials.html).
+
+1. Click on the **Credentials** button under **Resources** on the left menu bar.
+
+    ![credentials link](images/automation_controller_credentials.png)
+
+2. Under **Credentials** there will be multiple pre-configured credentials, including `Workshop Credential`, `Controller Credential` and the `registry.redhat.io credential`.  Click on the `Workshop Credential`.
+
+    ![Workshop Credential Link](images/workshop_credential.png)
+
+3. Under the `Workshop Credential` examine the following:
+
+* The **CREDENTIAL TYPE** is a **Machine** credential.
+* The **USERNAME** is set to `ec2-user`.
+* The **PASSWORD** is blank.
+* The **SSH PRIVATE KEY** is already configured, and is **ENCRYPTED**.
+  
+
+### Step 5: Examine the Automation controller Execution Environments
+Execution Environments are container images that can be utilized as Ansible execution.
+
+We will explore the existing Execution Environment in the workshop environment.
+
+> Note:
+>
+> Execution Environments are not specifically covered in detail in this workshop because the built-in Ansible Execution Environments already included all the Red Hat supported collections which includes all the network collections we use for this workshop. 
+> For more information on Execution Environments please [refer to the documentation](https://docs.ansible.com/automation-controller/latest/html/userguide/execution_environments.html)
+
+1. Click on the **Execution Environments** button under **Administration** on the left menu bar.
+
+    ![Execution Environment link](images/execution_environments_menu.jpg)
+
+2. Under **Execution Environments** there will be multiple pre-configured execution environments, including `Default execution environment`, `	Minimal execution environment` etc.,. We will be using the `Default execution environment` for our workshop. Please note the link under Image from where the images can be  retrieved (pulled).
+
+    ![Execution Environment List Link](images/execution_environments_list.jpg)
+
+
+## Takeaways
+
+* Automation controller needs an inventory to execute Ansible Playbooks again.  This inventory is identical to what users would use with the command line only Ansible project.
+* Although this workshop already setup the inventory, importing an existing Ansible Automation inventory is easy.  Check out [this blog post](https://www.ansible.com/blog/three-quick-ways-to-move-your-ansible-inventory-into-red-hat-ansible-tower) for more ways to easily get an existing inventory into Automation controller.
+* Automation controller can sync to existing SCM (source control management) including Github (Recommended approach) and as well as manual sync. 
+* Automation controller can store and encrypt credentials including SSH private keys and plain-text passwords.  Automation controller can also sync to existing credential storage systems such as CyberArk and Vault by HashiCorp
+
 ## Complete
 
-You have completed lab exercise 1!  
+You have completed lab exercise 1
 
-You now understand:
-
-* How to connect to the lab environment with Visual Studio Code
-* How to explore **execution environments** with `ansible-navigator`
-* Where the Ansible Navigator Configuration (`ansible-navigator.yml`) is located
-* Where the inventory is stored for command-line exercises
-* How to use ansible-navigator TUI (Text-based user interface)
-
-
+You have examined how to access and use VS Code.You have also examined all three components required to get started with Automation controller.  A credential, an inventory and a project.  In the next exercise we will look at job template.
 
 ---
 [Next Exercise](../2-first-playbook/README.md)
 
-[Click Here to return to the Ansible Network Automation Workshop](../README.md)
+[Click here to return to the Ansible Network Automation Workshop](../README.md)

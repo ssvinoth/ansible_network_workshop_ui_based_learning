@@ -1,5 +1,7 @@
 # Exercise 3: Ansible Facts
 
+**Read this in other languages**: ![uk](https://github.com/ansible/workshops/raw/devel/images/uk.png) [English](README.md),  ![japan](https://github.com/ansible/workshops/raw/devel/images/japan.png) [日本語](README.ja.md), ![Español](https://github.com/ansible/workshops/raw/devel/images/es.png) [Español](README.es.md).
+
 ## Table of Contents
 
 * [Objective](#objective)
@@ -7,10 +9,9 @@
    * [Step 1 - Using documentation](#step-1---using-documentation)
    * [Step 2 - Creating the play](#step-2---creating-the-play)
    * [Step 3 - Create the facts task](#step-3---create-the-facts-task)
-   * [Step 4 - Create Job Template](#step-4---create-job-template)
-   * [Step 5 - Launch the Job](#step-5---launch-the-job)
+   * [Step 4 - Executing the playbook](#step-4---executing-the-playbook)
    * [Step 5 - Using debug module](#step-5---using-debug-module)
-   * [Step 6 - Re-launch the Job](#step-6---relaunch-the-job)
+   * [Step 6 - Using stdout](#step-6---using-stdout)
 * [Takeaways](#takeaways)
 * [Solution](#solution)
 * [Complete](#complete)
@@ -24,7 +25,7 @@ Ansible facts are information derived from speaking to the remote network elemen
 This exercise will cover:
 
 * Building an Ansible Playbook from scratch.
-* Using the documentation
+* Using `ansible-navigator :doc` for documentation
 * Using the [cisco.ios.facts module](https://docs.ansible.com/ansible/latest/collections/cisco/ios/ios_facts_module.html).
 * Using the [debug module](https://docs.ansible.com/ansible/latest/modules/debug_module.html).
 
@@ -32,17 +33,31 @@ This exercise will cover:
 
 ### Step 1 - Using documentation
 
-All Ansible documentation is available at [Ansible docs website](https://docs.ansible.com/). 
+Enter the `ansible-navigator` interactive mode on the terminal
 
-List of all the available collections are available at [Ansible docs collections index page](https://docs.ansible.com/ansible/latest/collections/index.html)
+```bash
+$ ansible-navigator
+```
 
-Lets look at an example for the the `debug` module in the `ansible.builtin` collection :  [debug module documentaion](https://docs.ansible.com/ansible/latest/collections/ansible/builtin/debug_module.html#ansible-collections-ansible-builtin-debug-module)
+screenshot of `ansible-navigator`:
+![ansible-navigator interactive mode](images/ansible-navigator-interactive.png)
 
-![debug module doc](images/ansible_doc_debug_module_pg1.jpg)
+In the above screenshot we can see a line for module or plugin documentation:
+ 
+```
+`:doc <plugin>`                 Review documentation for a module or plugin
+ ```
 
-Scroll down to the Examples section. Examples can be cut and paste directly from the module documentation into your Ansible Playbook.
+Lets example the `debug` module by typing `:doc debug`
 
-![debug module doc examples](images/ansible_doc_debug_module_pg2_examples.jpg)
+```bash
+:doc debug
+```
+
+screenshot of `ansible-navigator :doc debug`:
+![ansible-navigator interactive mode doc](images/ansible-navigator-doc.png)
+
+The documentation for the `debug` module is now displayed in you interactive terminal session.  This is a YAML representation of the same exact documentation you would see on [docs.ansible.com](https://docs.ansible.com/ansible/latest/collections/ansible/builtin/debug_module.html).  Examples can be cut and paste directly from the module documentation into your Ansible Playbook.
 
 When referring to a non-built in module, there is three important fields:
 
@@ -59,9 +74,11 @@ Explanation of terms:
 - **collection** - example **ios** - A collection is a distribution format for Ansible content that can include playbooks, roles, modules, and plugins.  The **ios** collection contains all the modules for Cisco IOS/IOS-XE
 - **module** - example facts - Modules are discrete units of code that can be used in a playbook task. For example the **facts** modules will return structured data about that specified system.
 
-Lets look at an example for the the `cisco.ios.facts` module : [cisco.ios.facts documentaion](https://docs.ansible.com/ansible/latest/collections/cisco/ios/ios_facts_module.html#ansible-collections-cisco-ios-ios-facts-module)
+Press the **Esc** key to return to the main menu.  Try repeating the `:doc` command with the `cisco.ios.facts` module.
 
-![cisco.ios.facts module doc](images/ansible_doc_cisco-ios-facts_module_pg1.jpg)
+```bash
+:doc cisco.ios.facts
+```
 
 We will be using the facts module in our playbook.
 
@@ -113,70 +130,30 @@ Next, add the first `task`. This task will use the `cisco.ios.facts` module to g
 
 Save the playbook.
 
-**Sync the project:**
+### Step 4 - Executing the playbook
 
-1. Sync the changes to the controller project. Click on the `Terminal` menu and `Run Task` sub menu.
+Execute the Ansible Playbook by running `ansible-navigator`:
 
-![vscode run task menu](../2-first-playbook/images/vscode_terminal_run_task_menu.jpg)
+```sh
+$ ansible-navigator run facts.yml
+```
 
-2. Select the `ansible-project-sync` task from the list shown.This step syncs the playbooks to the controller `Student Network Automation Project` folder. 
+This will open an interactive session while the playbook interacts:
 
-![vscode run task ansible project sync](../2-first-playbook/images/vscode_run_task_ansible_project_sync.jpg)
+Screenshot of facts.yml:
+![ansible-navigator run facts.yml](images/ansible-navigator-facts.png)
 
-> Note:
-> This project sync task is NOT required when running in production with project using SCM like github.
+To zoom into the playbook output we can press **0** which will show us a host-centric view.  Since there is only one host, there is just one option.
 
-### Step 4 - Create Job Template
+Screenshot of zooming in:
+![ansible-navigator zoom hosts](images/ansible-navigator-hosts.png)
 
-* Open the web UI and click on the `Templates` link on the left menu.
+To see the verbose output of **rtr1** press **0** one more time to zoom into the module return values.
 
-   ![templates link](../6-controller-job-template/images/controller_templates.png)
+Screenshot of zooming into module data:
+![ansible-navigator zoom module](images/ansible-navigator-module.png)
 
-* Click on the blue **Add** button to create a new job template
-
-   ![templates link](../6-controller-job-template/images/controller_add.png)
-
-> Note:
->
-> Make sure to select `job template` and not `workflow template`)
-
-* Fill out the job template parameters as follows:
-
-  | Parameter | Value |
-  |---|---|
-  | Name  | Cisco gather facts  |
-  |  Job Type |  Run |
-  |  Inventory |  Workshop Inventory |
-  |  Project |  Student Network Automation Project |
-  |  Execution Environment | Default execution environment |
-  |  Playbook |  facts.yml |
-  |  Credential |  Workshop Credential |
-  
-  > NOTE: Please use the facts.yml file and NOT the 3-facts/facts.yml
-
-  Screenshot of the job template parameters filled out:
-   ![cisco gather facts job template](images/controller_create_cisco-gather-facts_template.jpg)
-
-* Scroll down and click the blue `Save` button.
-
-### Step 5 - Launch the Job
-1. Navigate back to the `Templates` window, where all Job Templates are listed.
-
-2. Launch the `Cisco gather facts` Job Template by clicking the Rocket button.
-
-    ![rocket button](../6-controller-job-template/images/controller_rocket.png)
-
-    When the rocket button is clicked this will launch the job.  The job will open in a new window called the **Job Details View**.  More info about [Automation controller jobs](https://docs.ansible.com/automation-controller/latest/html/userguide/jobs.html) can be found in the documentation.
-3. Examine the Job run output.
-![cisco gather facts 1st run](images/controller_cisco-gather-facts_1st_run.jpg)
-
-4. Click on the line mentioning `ok: [rtr1]` (line#5) to view the task output in JSON. You can view the facts that were collected from the Cisco network device.
-![cisco gather facts json output](images/controller_cisco-gather-facts_json_output.jpg)
-
-  Scroll down. You will see the facts like serial number , ios version etc., been retrieved. 
-
-  ![cisco gather facts json output 2](images/controller_cisco-gather-facts_json_output_2.jpg)
-
+You can scroll down to view any facts that were collected from the Cisco network device.
 
 ### Step 5 - Using debug module
 
@@ -204,24 +181,24 @@ Write two additional tasks that display the routers' OS version and serial numbe
 ```
 
 <!-- {% endraw %} -->
-> Note: Do not forget to save the yaml file and sync the project. 
 
-### Step 6 - Re-launch the Job
+### Step 6 - Using stdout
 
-Follow steps 1-3 from `Step 5 - Launch the Job` section to relaunch the job template. 
+Now re-run the playbook using the `ansible-navigator` and the `--mode stdout`
 
-Examine the output. You can see the output contains our debug messages with the os version and serial number facts.
+The full command is: `ansible-navigator run facts.yml --mode stdout`
 
-![cisco gather facts 2nd run with debug output](images/controller_cisco-gather-facts_2nd_run_output.jpg)
+Screenshot of ansible-navigator using stdout:
+![ansible-navigator stdout screenshot](images/ansible-navigator-facts-stdout.png)
 
 
 Using less than 20 lines of "code" you have just automated version and serial number collection. Imagine if you were running this against your production network! You have actionable data in hand that does not go out of date.
 
 ## Takeaways
 
-* All ansible documentation is available at [Ansible documentation](https://docs.ansible.com/).
+* The `ansible-navigator :doc` command will allow you access to documentation without an internet connection.  This documentation also matches the version of Ansible on the control node.
 * The [cisco.ios.facts module](https://docs.ansible.com/ansible/latest/collections/cisco/ios/ios_config_module.html) gathers structured data specific for Cisco IOS.  There are relevant modules for each network platform.  For example there is a junos_facts for Juniper Junos, and a eos_facts for Arista EOS.
-* The [debug module](https://docs.ansible.com/ansible/latest/modules/debug_module.html) allows an Ansible Playbook to print values to the output window.
+* The [debug module](https://docs.ansible.com/ansible/latest/modules/debug_module.html) allows an Ansible Playbook to print values to the terminal window.
 
 ## Solution
 

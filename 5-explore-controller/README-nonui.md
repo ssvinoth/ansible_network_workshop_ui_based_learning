@@ -1,8 +1,6 @@
 # Exercise 5: Explore Automation controller
 
-## If you are following the README-UI files then we can SKIP this exercise as exploring Automation controller would have been already completed in exercise 1. 
-
-You can still go through the content if required. 
+**Read this in other languages**: ![uk](https://github.com/ansible/workshops/raw/devel/images/uk.png) [English](README.md),  ![japan](https://github.com/ansible/workshops/raw/devel/images/japan.png) [日本語](README.ja.md), ![Español](https://github.com/ansible/workshops/raw/devel/images/es.png) [Español](README.es.md).
 
 ## Table of Contents
 
@@ -154,6 +152,6 @@ You have completed lab exercise 5
 You have now examined all three components required to get started with Automation controller.  A credential, an inventory and a project.  In the next exercise we will create a job template.
 
 ---
-[Previous Exercise](../4-resource-module/README-UI.md) | [Next Exercise](../6-controller-job-template/README-UI.md)
+[Previous Exercise](../4-resource-module/README.md) | [Next Exercise](../6-controller-job-template/README.md)
 
-[Click here to return to the Ansible Network Automation Workshop](../README-UI.md)
+[Click here to return to the Ansible Network Automation Workshop](../README.md)

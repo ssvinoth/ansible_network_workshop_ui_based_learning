@@ -1,7 +1,5 @@
 # Exercise 2 - First Ansible Playbook
 
-**Read this in other languages**: ![uk](https://github.com/ansible/workshops/raw/devel/images/uk.png) [English](README.md),  ![japan](https://github.com/ansible/workshops/raw/devel/images/japan.png) [日本語](README.ja.md), ![Español](https://github.com/ansible/workshops/raw/devel/images/es.png) [Español](README.es.md).
-
 ## Table of Contents
 
 * [Objective](#objective)
@@ -26,24 +24,21 @@ Use Ansible to update the configuration of routers.  This exercise will not crea
 This exercise will cover:
 
 * examining an existing Ansible Playbook
-* executing an Ansible Playbook on the command line using the `ansible-navigator` command
-* check mode (the `--check` parameter)
-* verbose mode (the `--verbose` or `-v` parameter)
+* executing an Ansible Playbook on the controller
+* check mode 
+* verbose mode 
 
 ## Guide
 
 ### Step 1 - Examine Ansible Playbook
 
-Navigate to the `network-workshop` directory if you are not already there.
+Navigate to the `network-workshop` directory if you are not already there in VS Code.
 
-```bash
-[student1@ansible ~]$ cd ~/network-workshop/
-[student1@ansible network-workshop]$
-[student1@ansible network-workshop]$ pwd
-/home/student1/network-workshop
-```
+Open the `network-workshop` directory in Visual Studio Code:
 
-Examine the provided Ansible Playbook named `playbook.yml`.  Either open the file in Visual Studio Code or `cat` the file:
+  ![picture of file browser](../1-explore/images/vscode-networkworkshop.png)
+
+Examine the provided Ansible Playbook named `playbook.yml`.  
 
 ```yaml
 ---
@@ -60,8 +55,6 @@ Examine the provided Ansible Playbook named `playbook.yml`.  Either open the fil
           - snmp-server community ansible-private RW
 ```
 
-* `cat` - Linux command allowing us to view file contents
-* `playbook.yml` - provided Ansible Playbook
 
 We will explore in detail the components of an Ansible Playbook in the next exercise.  It is suffice for now to see that this playbook will run two Cisco IOS-XE commands
 
@@ -72,24 +65,51 @@ snmp-server community ansible-private RW
 
 ### Step 2 - Execute Ansible Playbook
 
-Run the playbook using the `ansible-navigator` command.  The full command is:
-```ansible-navigator run playbook.yml --mode stdout```
+Run the playbook using the `Automation Controller` web interface.
 
-```bash
-[student1@ansible-1 network-workshop]$ ansible-navigator run playbook.yml --mode stdout
 
-PLAY [snmp ro/rw string configuration] *****************************************
+1.  Return to the workshop launch page provided by your instructor.
 
-TASK [ensure that the desired snmp strings are present] ************************
-changed: [rtr1]
+2.  Click on the link to the Automation controller webUI.  You should see a login screen similar to the follow:
 
-PLAY RECAP *********************************************************************
-rtr1                       : ok=1    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+   Screenshot of Automation controller login window.
+![automation controller login window](../1-explore/images/automation_controller_login.png)
 
-[student1@ansible-1 network-workshop]$
-```
+   * The username will be `admin`
+   * password provided on launch page
 
-* `--mode stdout` - By default `ansible-navigator` will run in interactive mode.  The default behavior can be modified by modifying the `ansible-navigator.yml`.  As playbooks get longer and involve multiple hosts the interactive mode allows you to "zoom in" on data in real-time, filter it, and navigate between various Ansible components.  Since this task only ran one task on one host the `stdout` is sufficient.
+
+3. After logging in the Job Dashboard will be the default view as shown below.
+
+   ![automation controller dashboard](../1-explore/images/automation_controller_dashboard.png)
+
+4. Click on the `Templates` menu under the `Resources` section on the left hand side menu.
+
+![job templates menu](images/job_templates_menu.jpg)
+
+5. Click on the `Cisco SNMP Config` on the right side list of templates.
+![job templates cisco snmp config](images/job_template_cisco_snmp_config.jpg)
+
+6. Check the Job template details such as `Project`, `Playbook`, `Inventory`,`Execution Environment`,`Credentials`.Note that this job template is under `Student Network Automation Project` and using `playbook.yml`. 
+
+![job templates cisco snmp config detail](images/job_template_cisco_snmp_config_detail.jpg)
+
+7. Run the job template by clicking on the `Launch` button at the bottom of the details view.
+
+![job templates cisco snmp config launch](images/job_template_cisco_snmp_config_launch.jpg)
+
+8. Click `Next`. Leave the `Job Type` as `Run` and `Verbosity` as `0(Normal)`. We will change them in the subsequent runs.
+
+![job templates cisco snmp config prompts 1st run](images/job_template_cisco_snmp_config_prompts_1st_run.jpg)
+
+9. Click `Launch`.
+![job templates cisco snmp config prompts 1st run launch](images/job_template_cisco_snmp_config_launch_1st_run.jpg)
+
+
+10. Check the `Output` of the Job run. Note that the task `ensure that the desired snmp strings are present` has status `changed` for `rtr1`. This means that the task has made the chnages on the router. We can check the router configuration to verify.
+
+![job templates cisco snmp config 1st run stdout](images/job_template_cisco_snmp_config_stdout_1st_run.jpg)
+
 
 ### Step 3 - Verify configuration on router
 
@@ -111,19 +131,15 @@ The `cisco.ios.config` module is idempotent. This means, a configuration change 
 >
 > Check out the [glossary here](https://docs.ansible.com/ansible/latest/reference_appendices/glossary.html) for more information on terms like idempotency.
 
-To validate the concept of idempotency, re-run the playbook:
+To validate the concept of idempotency, re-run the playbook. Click on the rocket icon on the right side top of the `output` view of the last job run.
 
-```bash
-[student1@ansible-1 network-workshop]$ ansible-navigator run playbook.yml --mode stdout
+ **Alternatively**, This can be initiated by following the `Step 2 - Execute Ansible Playbook` section steps.
 
-PLAY [snmp ro/rw string configuration] *****************************************
+![job templates cisco snmp config rerun](images/job_template_cisco_snmp_config_rerun.jpg)
 
-TASK [ensure that the desired snmp strings are present] ************************
-ok: [rtr1]
+Check the `Output` of the job run. 
+![job templates cisco snmp config rerun stdout](images/job_template_cisco_snmp_config_rerun_stdout.jpg)
 
-PLAY RECAP *********************************************************************
-rtr1                       : ok=1    changed=0    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
-```
 
 > Note:
 >
@@ -139,47 +155,61 @@ Now update the task to add one more SNMP RO community string named `ansible-test
 snmp-server community ansible-test RO
 ```
 
-Use Visual Studio Code to open the `playbook.yml` file to add the command:
+1. Use Visual Studio Code to open the `playbook.yml` file to add the command:
 
 
-The Ansible Playbook will now look like this:
+    The Ansible Playbook will now look like this:
 
-```yaml
----
-- name: snmp ro/rw string configuration
-  hosts: cisco
-  gather_facts: no
+    ```yaml
+    ---
+    - name: snmp ro/rw string configuration
+      hosts: cisco
+      gather_facts: no
 
-  tasks:
+      tasks:
 
-    - name: ensure that the desired snmp strings are present
-      cisco.ios.config:
-        commands:
-          - snmp-server community ansible-public RO
-          - snmp-server community ansible-private RW
-          - snmp-server community ansible-test RO
-```
+        - name: ensure that the desired snmp strings are present
+          cisco.ios.config:
+            commands:
+              - snmp-server community ansible-public RO
+              - snmp-server community ansible-private RW
+              - snmp-server community ansible-test RO
+    ```
 
-Make sure to save the `playbook.yml` with the change.
+2. Make sure to save the `playbook.yml` with the change.
+
+3. Sync the changes to the controller project. Click on the `Terminal` menu and `Run Task` sub menu.
+
+![vscode run task menu](images/vscode_terminal_run_task_menu.jpg)
+
+4. Select the `ansible-project-sync` task from the list shown.This syncs the playbooks to the controller `Student Network Automation Project` (/var/lib/awx/projects/student_network_workshop) folder. 
+
+![vscode run task ansible project sync](images/vscode_run_task_ansible_project_sync.jpg)
+
+> Note:
+> This project sync task is NOT required when running in production with project using SCM like github.
+ 
+
 
 ### Step 6 - Use check mode
 
-This time however, instead of running the playbook to push the change to the device, execute it using the `--check` flag in combination with the `-v` or verbose mode flag:
+This time however, instead of running the playbook to push the change to the device, execute it using the `Job Type` as `Check` and `Verbosity` as `1(Verbose)`.
 
-```bash
-[student1@ansible-1 network-workshop]$ ansible-navigator run playbook.yml --mode stdout --check -v
-Using /etc/ansible/ansible.cfg as config file
+Follow the steps in `Step 2 - Execute Ansible Playbook` section steps. Except in `Step 8` select the `Job Type` as `Check` and `Verbosity` as `1(Verbose)` before launching. 
 
-PLAY [snmp ro/rw string configuration] *****************************************
+![job templates cisco snmp config check mode prompt](images/job_template_cisco_snmp_config_check_mode_prompt.jpg)
 
-TASK [ensure that the desired snmp strings are present] ************************
-changed: [rtr1] => {"ansible_facts": {"discovered_interpreter_python": "/usr/bin/python"}, "banners": {}, "changed": true, "commands": ["snmp-server community ansible-test RO"], "updates": ["snmp-server community ansible-test RO"], "warnings": ["To ensure idempotency and correct diff the input configuration lines should be similar to how they appear if present in the running configuration on device"]}
+Check the `Output` of the Job run. 
 
-PLAY RECAP *********************************************************************
-rtr1                       : ok=1    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
-```
+![job templates cisco snmp config check mode output](images/job_template_cisco_snmp_config_check_mode_output.jpg)
 
-The `--check` mode in combination with the `--verbose` flag will display the exact changes that will be deployed to the end device without actually pushing the change. This is a great technique to validate the changes you are about to push to a device before pushing it.
+
+The `check` mode in combination with the `1(verbose)` flag will display the exact changes that will be deployed to the end device without actually pushing the change. This is a great technique to validate the changes you are about to push to a device before pushing it.
+
+You can click on the `changed: [rtr1]` line (line#6) to view the result in JSON format. 
+
+![job templates cisco snmp config check mode JSON output](images/job_template_cisco_snmp_config_check_mode_output_json.jpg)
+
 
 ### Step 7 - Verify configuration is not present
 
@@ -195,19 +225,9 @@ snmp-server community ansible-private RW
 
 ### Step 8 - Re-run the Ansible Playbook
 
-Finally re-run this playbook again without the `-v` or `--check` flag to push the changes.
+Finally re-run this playbook again with `Job Type` as `Run` and `Verbosity` as `0(Normal)`. This will execute the play and make the configuration changes to the router.
 
-```bash
-[student1@ansible-1 network-workshop]$ ansible-navigator run playbook.yml --mode stdout
-
-PLAY [snmp ro/rw string configuration] *****************************************
-
-TASK [ensure that the desired snmp strings are present] ************************
-changed: [rtr1]
-
-PLAY RECAP *********************************************************************
-rtr1                       : ok=1    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
-```
+![job templates cisco snmp config 1st run prompt](images/job_template_cisco_snmp_config_prompts_1st_run.jpg)
 
 ### Step 9 - Verify configuration is applied
 
