@@ -105,15 +105,18 @@ Run the playbook using the `Automation Controller` web interface.
 9. Click `Launch`.
 ![job templates cisco snmp config prompts 1st run launch](images/job_template_cisco_snmp_config_launch_1st_run.jpg)
 
+10. Click on `Reload output` if you see the `Event processing complete` message
 
-10. Check the `Output` of the Job run. Note that the task `ensure that the desired snmp strings are present` has status `changed` for `rtr1`. This means that the task has made the chnages on the router. We can check the router configuration to verify.
+![job run output reload](images/job_run_reload_output.jpg)
+
+11. Check the `Output` of the Job run. Note that the task `ensure that the desired snmp strings are present` has status `changed` for `rtr1`. This means that the task has made the changes on the router. We can check the router configuration to verify.
 
 ![job templates cisco snmp config 1st run stdout](images/job_template_cisco_snmp_config_stdout_1st_run.jpg)
 
 
 ### Step 3 - Verify configuration on router
 
-Verify that the Ansible Playbook worked.  Login to `rtr1` and check the running configuration on the Cisco IOS-XE device.
+Verify that the Ansible Playbook worked.  Login to `rtr1` and check the running configuration on the Cisco IOS-XE device using the VSCode Terminal window.
 
 ```bash
 [student1@ansible network-workshop]$ ssh rtr1

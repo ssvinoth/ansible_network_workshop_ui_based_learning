@@ -80,7 +80,7 @@ Enter the following play definition into `facts.yml`:
 
 ```yaml
 ---
-- name: gather information from routers
+- name: Gather information from routers
   hosts: cisco
   gather_facts: no
 ```
@@ -98,12 +98,12 @@ Next, add the first `task`. This task will use the `cisco.ios.facts` module to g
 
 ```yaml
 ---
-- name: gather information from routers
+- name: Gather information from routers
   hosts: cisco
   gather_facts: no
 
   tasks:
-    - name: gather router facts
+    - name: Gather router facts
       cisco.ios.facts:
 ```
 

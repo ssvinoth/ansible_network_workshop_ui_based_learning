@@ -59,11 +59,11 @@ Explore and understand the lab environment.  This exercise will cover
 
   ![login vs code](images/vscode_login.png)
 
-- Open the `network-workshop` directory in Visual Studio Code:
+- Open the `network-workshop` directory in Visual Studio Code from using the menu : `File → Open Folder`: 
 
   ![picture of file browser](images/vscode-networkworkshop.png)
 
-- Click on the `playbook.yml` to view the content.
+- On the side bar , Click on the `playbook.yml` to view the content.
 
   ![picture of playbook](images/vscode-playbook.png)
 
@@ -140,6 +140,7 @@ Cisco IOS XE Software, Version 16.09.02
 
    ![version info window](images/automation_controller_about_info.png)
 
+6. Close the window by clicking the `x` sign at the top right corner.
 
 ### Step 2: Examine the Automation controller Inventory
 
@@ -147,13 +148,13 @@ An inventory is required for Automation controller to be able to run jobs.  An i
 
 > Note:
 >
-> More info on Inventories in respect to Automation controller can be found in the [documentation here](https://docs.ansible.com/automation-controller/4.0.0/html/userguide/inventories.html)
+> More info on Inventories in respect to Automation controller can be found in the [documentation here](https://docs.ansible.com/automation-controller/latest/html/userguide/inventories.html)
 
 1. Click on the **Inventories** button under **RESOURCES** on the left menu bar.
 
     ![Inventories Button](images/automation_controller_inventories_menu.jpg)
 
-2. Under Inventories click on the `Workshop Inventory`.
+2. Under Inventories click on the `Workshop Inventory` from the list shown on the right side.
 
 3. Under the `Workshop Inventory` click the **Hosts** button at the top.  There will be four hosts here, rtr1 through rtr4 as well as the ansible control node.  
 
@@ -207,7 +208,7 @@ A project is how Ansible Playbooks are imported into Automation controller.  You
 
     ![Student Project Link](images/automation_controller_student_project.jpg)
 
-    Note that Type is set to `Manual` for this project.  This means this project is using Manual sync instead of using SCM like GIT.
+    > Note that Type is set to `Manual` for this project.  This means this project is using Manual sync instead of using SCM like GIT. This is only shown as example. **We highly recommend to use SCM like GIT in all production environments.**
 
 3. Click on the `Student Network Automation Project`.
 
@@ -222,7 +223,7 @@ Credentials are utilized by Automation controller for authentication when launch
 
 > Note:
 >
-> For more information on Credentials in Automation controller please [refer to the documentation](https://docs.ansible.com/automation-controller/4.0.0/html/userguide/credentials.html).
+> For more information on Credentials in Automation controller please [refer to the documentation](https://docs.ansible.com/automation-controller/latest/html/userguide/credentials.html).
 
 1. Click on the **Credentials** button under **Resources** on the left menu bar.
 
@@ -252,7 +253,7 @@ We will explore the existing Execution Environment in the workshop environment.
 
     ![Execution Environment link](images/execution_environments_menu.jpg)
 
-2. Under **Execution Environments** there will be multiple pre-configured execution environments, including `Default execution environment`, `	Minimal execution environment` etc.,. We will be using the `Default execution environment` for our workshop. Please note the link under Image from where the images can be  retrieved (pulled).
+2. Under **Execution Environments** there will be multiple pre-configured execution environments, including `Default execution environment`, `	Minimal execution environment` etc.,. We will be using the `network workshop execution environment` for our workshop. Please note the link under Image from where the images can be  retrieved (pulled).
 
     ![Execution Environment List Link](images/execution_environments_list.jpg)
 
